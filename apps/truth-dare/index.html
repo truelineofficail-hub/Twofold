@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#040405">
+<title>Truth × Dare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+  --ink:#f6f6f8; --ink2:rgba(246,246,248,.66); --ink3:rgba(246,246,248,.4);
+  --line:rgba(255,255,255,.12); --glass:rgba(255,255,255,.06);
+  --truth:#f4f6fa; --dare:#a9afbc; --lav:#d8dce5;
+  --metal:linear-gradient(180deg,#ffffff 0%,#dcdfe6 40%,#8e929e 100%);
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;height:100%;background:#040405;color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+input{user-select:text;-webkit-user-select:text;font:inherit;color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0;touch-action:manipulation}
+.serif{font-family:var(--serif);font-weight:400}
+.metal{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+
+/* ---------- backgrounds: static monochrome gradients ---------- */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#040405;contain:strict}
+.scene{position:absolute;inset:0}
+#bg .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.5))}
+#bg .glow{position:absolute;width:90vmax;height:90vmax;left:-30vmax;top:-10vmax;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.075),transparent 60%);will-change:transform;animation:drift 42s ease-in-out infinite alternate}
+#bg .glow.b{left:auto;right:-45vmax;top:auto;bottom:-25vmax;background:radial-gradient(circle,rgba(255,255,255,.045),transparent 60%);animation-duration:58s}
+@keyframes drift{to{transform:translate3d(14vmax,-4vmax,0)}}
+.s-ocean{background:
+  radial-gradient(60% 14% at 50% 60%,rgba(255,255,255,.16),transparent 72%),
+  linear-gradient(180deg,#040405 0%,#0d0e11 44%,#3b3e45 58%,#0a0b0d 60%,#030304 100%)}
+.s-rain{background:
+  radial-gradient(circle at 18% 28%,rgba(255,255,255,.16) 0 5%,transparent 8%),
+  radial-gradient(circle at 70% 20%,rgba(255,255,255,.13) 0 7%,transparent 10%),
+  radial-gradient(circle at 82% 62%,rgba(255,255,255,.1) 0 6%,transparent 9%),
+  radial-gradient(circle at 34% 74%,rgba(255,255,255,.12) 0 8%,transparent 11%),
+  radial-gradient(circle at 52% 44%,rgba(255,255,255,.08) 0 4%,transparent 7%),
+  linear-gradient(180deg,#0a0b0e,#17191e 60%,#07080a)}
+.s-night{background:
+  radial-gradient(1.4px 1.4px at 14% 22%,#fffc,transparent),radial-gradient(1px 1px at 28% 12%,#fffa,transparent),
+  radial-gradient(1.6px 1.6px at 44% 30%,#fffd,transparent),radial-gradient(1px 1px at 61% 16%,#fffb,transparent),
+  radial-gradient(1.4px 1.4px at 76% 34%,#fffb,transparent),radial-gradient(1px 1px at 88% 10%,#fffa,transparent),
+  radial-gradient(1.2px 1.2px at 22% 48%,#fff9,transparent),radial-gradient(1px 1px at 68% 52%,#fff9,transparent),
+  radial-gradient(1.2px 1.2px at 90% 60%,#fffa,transparent),radial-gradient(1px 1px at 8% 70%,#fff9,transparent),
+  linear-gradient(180deg,#040405,#101115 60%,#1a1b21 100%)}
+.s-forest{background:
+  radial-gradient(45% 30% at 30% 70%,rgba(255,255,255,.09),transparent 70%),
+  radial-gradient(50% 26% at 75% 40%,rgba(255,255,255,.06),transparent 70%),
+  linear-gradient(180deg,#050506,#111214 55%,#060607)}
+.s-sunset{background:
+  radial-gradient(circle at 72% 22%,rgba(255,255,255,.95) 0 2.4%,rgba(255,255,255,.2) 3.4%,transparent 28%),
+  linear-gradient(180deg,#050506,#111216 55%,#1b1c21)}
+.s-black{background:linear-gradient(180deg,#030304,#08080a)}
+
+/* calm pure-black splash */
+.splash h1.mini{font-size:26px;letter-spacing:.2em;padding-left:.2em;animation:in .9s .1s both}
+.plain #bg{background:#000}
+.plain #bg .scene,.plain #bg .veil,.plain #bg .glow{display:none}
+
+/* ---------- shell ---------- */
+#app{position:relative;z-index:1;max-width:430px;height:100%;margin:0 auto;display:flex;flex-direction:column}
+.bar{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;padding:10px 12px 4px;min-height:58px;flex:none}
+.bar .bt{text-align:center;font-size:12px;letter-spacing:.26em;color:var(--ink2);text-transform:uppercase;font-weight:400}
+.bar .bt.s{font-family:var(--serif);font-size:19px;letter-spacing:.01em;text-transform:none;color:var(--ink)}
+.ib{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--ink2);transition:background .2s,color .2s}
+.ib:active,.ib:focus-visible{background:var(--glass);color:var(--ink);outline:none}
+.prog{height:2px;background:rgba(255,255,255,.08);margin:2px 26px 0;flex:none;position:relative;border-radius:2px;overflow:hidden}
+.prog i{position:absolute;left:0;top:0;bottom:0;width:100%;transform-origin:left;background:linear-gradient(90deg,#8e929e,#fff);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+#screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 24px 24px;display:flex;flex-direction:column;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#screen::-webkit-scrollbar{display:none}
+#screen.enter>*{animation:in .4s cubic-bezier(.2,.7,.2,1) both}
+@keyframes in{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+#nav{display:none;flex:none;margin:0 18px 14px;padding:6px;border-radius:26px;justify-content:space-around;
+  background:rgba(14,14,17,.88);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1)}
+#nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 8px;border-radius:20px;font-size:11px;letter-spacing:.04em;color:var(--ink3);transition:color .2s,background .2s}
+#nav button.on{color:#fff;background:rgba(255,255,255,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+#nav button:focus-visible{outline:1px solid #fff}
+
+/* ---------- glass ---------- */
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12)}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border-radius:20px;font-size:15px;font-weight:500;letter-spacing:.04em;
+  color:#0a0a0c;background:linear-gradient(180deg,#ffffff 0%,#e6e8ee 55%,#b9bdc8 100%);border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 26px rgba(255,255,255,.08),inset 0 1px 0 #fff;transition:transform .15s}
+.btn::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:30%;transform:translate3d(0,0,0) skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);opacity:.7;animation:sheen 6s ease-in-out infinite;pointer-events:none}
+@keyframes sheen{0%,55%{transform:translate3d(0,0,0) skewX(-20deg)}100%{transform:translate3d(520%,0,0) skewX(-20deg)}}
+.btn:active{transform:scale(.975)}
+.btn:focus-visible,.reveal:focus-visible,.row:focus-visible,.chip:focus-visible,.pill:focus-visible,.tile:focus-visible{outline:1px solid #fff;outline-offset:2px}
+.btn.ghost{color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border-color:var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);font-weight:400}
+.btn.ghost::after{display:none}
+.link{color:var(--ink2);font-size:13px;padding:14px;text-align:center}
+.link:active{color:#fff}
+.muted{color:var(--ink2)}
+.sub{color:var(--ink2);font-size:14px;margin:8px 0 0;line-height:1.5}
+h1,h2,h3{margin:0}
+.ttl{font-size:30px;line-height:1.18}
+.spacer{flex:1;min-height:16px}
+.center{display:flex;flex-direction:column;align-items:center;text-align:center}
+
+/* ---------- splash ---------- */
+.splash{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;padding-top:6px;padding-bottom:20px}
+.badge{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink2);padding:9px 16px;border-radius:30px;
+  background:var(--glass);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.badge i{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff;animation:soft 3s ease-in-out infinite}
+.emblem{width:132px;height:132px;position:relative;margin-bottom:26px}
+.emblem::before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 62%)}
+.emblem svg{position:relative;width:100%;height:100%;overflow:visible}
+.emblem .orbit{transform-origin:60px 60px;animation:spin 40s linear infinite}
+.emblem .tw{transform-origin:60px 60px;animation:twinkle 3.6s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.35;transform:scale(.7)}}
+.splash h1{font-family:var(--serif);font-weight:400;font-size:37px;letter-spacing:.14em;line-height:1.25;padding-left:.14em}
+.splash h1 span{margin:0 .1em;font-weight:300}
+.tag2{margin:14px 0 0;font-size:11px;letter-spacing:.38em;padding-left:.38em;text-transform:uppercase;color:var(--ink2)}
+.welcome{margin:22px 0 0;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink2);line-height:1.5;max-width:270px}
+.facts{width:100%;display:grid;grid-template-columns:repeat(3,1fr);padding:18px 6px;margin-bottom:16px}
+.facts div{text-align:center;position:relative}
+.facts div+div::before{content:"";position:absolute;left:0;top:10%;bottom:10%;width:1px;background:var(--line)}
+.facts b{display:block;font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.1}
+.facts small{display:block;margin-top:6px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.foot{margin:16px 0 4px;font-size:11px;letter-spacing:.14em;color:var(--ink3)}
+
+/* inputs */
+.field{display:flex;align-items:center;gap:14px;padding:13px 18px;margin-top:14px;border-radius:20px;transition:border-color .2s}
+.field .av{color:var(--ink2);flex:none}
+.field label{display:block;font-size:11px;letter-spacing:.06em;color:var(--ink3);margin-bottom:3px}
+.field input{width:100%;background:none;border:0;outline:0;font-size:17px;padding:0;font-weight:400}
+.field input::placeholder{color:var(--ink3);font-weight:300}
+.field:focus-within{border-color:rgba(255,255,255,.5)}
+
+/* home */
+.hero .mk{color:var(--ink2);margin-bottom:22px}
+.hello{font-size:40px;line-height:1.16;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.resume{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:18px;margin-bottom:12px;font-size:13px;color:var(--ink2)}
+.resume b{font-weight:400;color:var(--ink)}
+.resume i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;flex:none}
+.pills{display:flex;gap:10px;margin-top:6px}
+.pill{flex:1;height:48px;border-radius:16px;font-size:13px;letter-spacing:.03em;color:var(--ink2);display:flex;align-items:center;justify-content:center;transition:color .2s,transform .15s}
+.pill:active{color:#fff;transform:scale(.97)}
+
+/* chips */
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.chip{height:96px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:border-color .2s,background .2s,transform .15s}
+.chip:active{transform:scale(.97)}
+.chip b{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1}
+.chip small{color:var(--ink3);font-size:11px;letter-spacing:.08em}
+.chip.on{border-color:rgba(255,255,255,.7);background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.05));box-shadow:0 0 24px rgba(255,255,255,.08),inset 0 1px 0 rgba(255,255,255,.25)}
+.chip.on small{color:var(--ink2)}
+.custom{margin-top:14px;padding:14px 18px;border-radius:18px;display:flex;align-items:center;gap:12px}
+.custom input{flex:1;background:none;border:0;outline:0;font-size:18px;min-width:0;font-weight:400}
+.custom span{color:var(--ink3);font-size:13px}
+.note{font-size:12px;color:var(--ink3);margin-top:18px;text-align:center;line-height:1.6}
+
+/* turn */
+.strip{display:flex;justify-content:center;gap:8px}
+.strip .pl{display:flex;align-items:center;gap:8px;font-size:12px;padding:7px 14px;border-radius:20px;color:var(--ink3);border:1px solid transparent;transition:all .3s}
+.strip .pl i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.6}
+.strip .pl.on{color:#fff;border-color:var(--line);background:var(--glass)}
+.strip .pl.on i{background:#fff;opacity:1;box-shadow:0 0 8px #fff}
+.avatar{width:80px;height:80px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-size:32px;margin:0 auto 26px;
+  background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 8px rgba(255,255,255,.03),0 12px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3)}
+.big{font-size:42px;line-height:1.14;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.reveal{position:relative;width:100%;height:92px;border-radius:28px;font-size:15px;font-weight:400;letter-spacing:.55em;padding-left:.55em;overflow:hidden;color:#fff;
+  background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.4);
+  box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 30px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s}
+.reveal::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 50% 0%,rgba(255,255,255,.22),transparent 70%);opacity:.4;animation:glowop 4s ease-in-out infinite}
+.reveal::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:26%;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);animation:sheen 5s ease-in-out infinite;pointer-events:none}
+.reveal:active{transform:scale(.98)}
+@keyframes glowop{50%{opacity:1}}
+
+.shuf{position:relative;width:230px;height:230px;margin:0 auto}
+.shuf .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.2);animation:spin 3s linear infinite;will-change:transform}
+.shuf .ring::after{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}
+.shuf .c{position:absolute;width:82px;height:104px;border-radius:18px;display:grid;place-items:center;color:var(--ink2);top:50%;left:50%;margin:-52px 0 0 -41px;will-change:transform}
+.shuf .c1{animation:c1 .9s ease-in-out infinite alternate}
+.shuf .c2{animation:c2 .9s ease-in-out infinite alternate}
+@keyframes c1{from{transform:translate3d(-30px,-6px,0) rotate(-12deg)}to{transform:translate3d(14px,8px,0) rotate(6deg)}}
+@keyframes c2{from{transform:translate3d(30px,6px,0) rotate(12deg)}to{transform:translate3d(-14px,-8px,0) rotate(-6deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.word{font-family:var(--serif);font-size:34px;letter-spacing:.22em;padding-left:.22em;margin-top:36px;height:44px;text-align:center}
+
+.pcard{position:relative;width:100%;border-radius:30px;padding:36px 28px;text-align:center;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,var(--tint),rgba(255,255,255,.025) 60%),rgba(10,10,12,.7);border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 22px 50px rgba(0,0,0,.55),0 0 40px var(--halo),inset 0 1px 0 rgba(255,255,255,.2)}
+.pcard::before{content:"";position:absolute;top:0;left:14%;right:14%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent)}
+.pcard.truth{--tint:rgba(255,255,255,.24);--acc:#fff;--halo:rgba(255,255,255,.07)}
+.pcard.dare{--tint:rgba(255,255,255,.07);--acc:#b4b9c6;--halo:rgba(255,255,255,.03)}
+.pcard.dare{border-color:rgba(255,255,255,.28)}
+.pcard.tap{cursor:pointer;animation:settle .5s cubic-bezier(.2,.8,.2,1) both}
+.pcard.tap:active{transform:scale(.985)}
+@keyframes settle{from{transform:scale(.94) translate3d(0,8px,0);opacity:0}to{transform:none;opacity:1}}
+.pcard .spark{color:var(--acc);margin-bottom:16px}
+.pcard .who{font-size:12px;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase}
+.pcard h2{font-size:40px;margin:8px 0 0;letter-spacing:.1em;padding-left:.1em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.pcard hr{width:36px;border:0;border-top:1px solid rgba(255,255,255,.35);margin:22px auto}
+.pcard .hint{font-size:14px;color:var(--ink2);margin:0;letter-spacing:.02em;animation:soft 2.6s ease-in-out infinite}
+@keyframes soft{50%{opacity:.45}}
+.pcard .cat{margin-top:26px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);padding:5px 14px;border:1px solid rgba(255,255,255,.18);border-radius:20px}
+.ptext{font-family:var(--serif);font-size:23px;line-height:1.55;margin:0;animation:in .6s .05s both}
+.ptext::before{content:"“";display:block;font-size:44px;line-height:.6;height:22px;color:var(--acc);opacity:.8}
+
+/* lists */
+.list{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:20px;text-align:left;width:100%;transition:transform .15s}
+.row:active{transform:scale(.985)}
+.row .ri{color:var(--ink2);flex:none;display:grid;place-items:center}
+.row .rt{flex:1;min-width:0}
+.row .rt b{display:block;font-weight:400;font-size:15px}
+.row .rt small{display:block;color:var(--ink3);font-size:12px;margin-top:3px;line-height:1.4}
+.row .ch{color:var(--ink3);flex:none}
+.hrow small.d{color:var(--dare)} .hrow small.t{color:#fff}
+.sec{font-size:11px;color:var(--ink3);margin:26px 6px 0;letter-spacing:.2em}
+.sw{width:46px;height:28px;border-radius:20px;background:rgba(255,255,255,.14);position:relative;flex:none;transition:background .25s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#9a9ea9;transition:transform .25s,background .25s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.sw.on{background:rgba(255,255,255,.35)} .sw.on::after{transform:translateX(18px);background:#fff}
+.empty{margin:auto 0;text-align:center;color:var(--ink3);font-size:14px;line-height:1.7;padding:40px 10px}
+.divl{margin:24px 6px 2px;font-size:11px;letter-spacing:.14em;color:var(--ink3);display:flex;align-items:center;gap:12px}
+.divl::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* stats */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.stat{padding:22px 12px;text-align:center}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.1;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.stat small{display:block;color:var(--ink2);font-size:12px;letter-spacing:.06em;margin-top:8px}
+.stat.wide{grid-column:span 2;padding:32px 12px}
+.stat.wide b{font-size:60px}
+
+/* steps */
+.step{display:flex;gap:16px;align-items:flex-start;padding:12px 0}
+.step i{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:13px;color:var(--ink2);background:var(--glass)}
+.step b{display:block;font-weight:400;font-size:15px;margin-top:1px}
+.step small{color:var(--ink3);font-size:13px;line-height:1.5}
+
+/* backgrounds */
+.bgs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:22px}
+.tile{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;border:1px solid var(--line);transition:border-color .2s,transform .2s;contain:paint}
+.tile span{position:absolute;left:0;right:0;bottom:0;padding:22px 6px 9px;font-size:11px;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.tile.on{border:2px solid #fff;transform:scale(1.02)}
+
+/* modal + toast */
+#modal{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:28px;background:rgba(0,0,0,.75)}
+#modal .box{max-width:340px;width:100%;padding:28px 22px 18px;text-align:center;background:rgba(16,16,19,.98);animation:settle .3s both}
+#modal h3{font-family:var(--serif);font-weight:400;font-size:22px}
+#modal p{color:var(--ink2);font-size:14px;line-height:1.6;margin:10px 0 22px}
+#modal .acts{display:flex;gap:10px}
+#modal .acts .btn{height:48px}
+#toast{position:fixed;left:50%;bottom:110px;transform:translate(-50%,10px);z-index:30;padding:11px 18px;border-radius:16px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;background:rgba(18,18,21,.97);border:1px solid var(--line);white-space:nowrap}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+#hubNav{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:14px;z-index:15;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  opacity:.55;transition:opacity .2s,background .2s;touch-action:manipulation}
+#hubNav:active{opacity:1;background:rgba(255,255,255,.16)}
+@media (min-width:431px){#hubNav{left:calc(50% - 205px + 14px)}}
+</style>
+</head>
+<body>
+<button id="hubNav" aria-label="All Apps" title="All Apps"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></button>
+<script>document.getElementById('hubNav').addEventListener('click', function(){ location.href = '../../index.html'; });</script>
+
+<div id="bg"><div class="scene s-ocean" id="scene"></div><div class="veil"></div><div class="glow"></div><div class="glow b"></div></div>
+<div id="app">
+  <div id="top"></div>
+  <main id="screen"></main>
+  <nav id="nav" aria-label="Main"></nav>
+</div>
+<div id="modal"></div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ================= PROMPT DATABASES ================= */
+const TRUTH_SRC = {
+Funny:[
+"What's the silliest thing you've ever cried about?",
+"What's the most embarrassing song on your playlist?",
+"What's a food combination you love that other people find weird?",
+"What's the funniest lie you've ever told?",
+"Which cartoon character do you secretly relate to the most?",
+"What's the strangest thing you've ever Googled?",
+"What's your most ridiculous irrational fear?",
+"What's the worst haircut you've ever had?",
+"What nickname did you hate as a kid?",
+"What's the dumbest thing you've done to impress someone?",
+"If you had to eat one meal forever, what would it be?",
+"What's the weirdest habit you have when you're alone?",
+"What's a talent you have that is completely useless?",
+"What's the funniest thing you've said in your sleep, or been told you said?",
+"What's the most awkward thing that's happened to you in public?"],
+Deep:[
+"What's something you've never told anyone before?",
+"What do you fear most about the future?",
+"What moment in your life changed you the most?",
+"What's something you wish people understood about you?",
+"What's a regret you still think about?",
+"When do you feel most like yourself?",
+"What's a dream you gave up on, and do you miss it?",
+"What's the kindest thing anyone has ever done for you?",
+"What do you need more of in your life right now?",
+"What's a belief you held years ago that you've completely changed?",
+"What makes you feel truly safe with someone?",
+"What's something you're still trying to forgive yourself for?",
+"What does a perfect, ordinary day look like to you?",
+"Who shaped who you are the most, and how?",
+"What are you most proud of that almost nobody knows about?"],
+Romantic:[
+"When did you first realize you liked me?",
+"What's your favorite memory of us?",
+"What's one thing I do that makes you fall for me again?",
+"Where would you take me if we could go anywhere tomorrow?",
+"What song reminds you of us?",
+"What's your idea of a perfect date night with me?",
+"What was your first impression of me?",
+"What small thing do I do that you secretly love?",
+"When do you feel closest to me?",
+"What's something you've always wanted to tell me?",
+"How do you picture us a few years from now?",
+"What's the most romantic thing you've ever imagined doing for me?",
+"What's one thing about us you never want to change?",
+"What moment made you feel most loved by me?",
+"What's a tradition you'd like us to start together?"],
+Flirty:[
+"What's the first thing you noticed about me?",
+"What's your favorite thing about the way I look?",
+"What's the most attractive thing someone can do?",
+"Have you ever had a dream about me?",
+"Which outfit of mine do you like best?",
+"Where's your favorite place to be kissed?",
+"What's something I do that drives you a little crazy, in a good way?",
+"What's your favorite way to be flirted with?",
+"What's the boldest flirty thing you've ever done?",
+"What would you whisper to me if nobody else was around?",
+"What's your idea of the perfect kiss?",
+"When was the last time you thought about me and smiled?",
+"What's a pickup line that would actually work on you?",
+"What's one thing you'd like me to do more often?",
+"What's the most attractive thing about my personality?"],
+Embarrassing:[
+"What's your most embarrassing moment from school?",
+"What's the most cringe thing you've ever posted online?",
+"Have you ever been caught doing something you shouldn't have?",
+"What's the most embarrassing thing in your camera roll?",
+"What's the worst date you've ever been on?",
+"What's a guilty pleasure you'd be embarrassed to admit?",
+"What's the most awkward text you've sent to the wrong person?",
+"When did you last trip or fall in front of people?",
+"What embarrassing thing did you do when you had a crush on someone?",
+"What's the most childish thing you still do?",
+"What's the strangest rumor you've heard about yourself?",
+"What's the most embarrassing thing you've done to get attention?",
+"What's something you pretended to know about but didn't?",
+"What's the cheesiest thing you've ever said to someone?",
+"What's the most embarrassing thing you've ever worn?"],
+Relationship:[
+"What's one thing I could do to make you feel more supported?",
+"What did you think would happen the first time we talked?",
+"What's something you're still curious about when it comes to me?",
+"What do you think is our strongest quality as a pair?",
+"What's one thing we could improve together?",
+"When do you feel most understood by me?",
+"What's a small habit of mine you find endearing?",
+"What's one fear you have about relationships?",
+"What does trust look like to you?",
+"What's a moment when I surprised you?",
+"What's something you've been afraid to ask me?",
+"How do you like to be comforted when you're upset?",
+"What's your love language, and how can I speak it better?",
+"What's a goal you'd love for us to achieve together?",
+"What's something I've taught you?"],
+Random:[
+"If you could live in any era, which would it be?",
+"What's your most-used emoji, and what does it say about you?",
+"What superpower would you pick, and why?",
+"What's the best gift you've ever received?",
+"If you could have dinner with anyone, who would it be?",
+"What's a smell that brings back memories?",
+"What's the best advice you've ever gotten?",
+"What's a place you've never been but feel drawn to?",
+"What's one thing you'd do if you knew you couldn't fail?",
+"What's your comfort movie?",
+"If you had a free day and no responsibilities, what would you do?",
+"What's a skill you wish you could learn overnight?",
+"What's the best meal you've ever had?",
+"What would your autobiography be called?",
+"What's something small that always makes your day better?"]
+};
+const DARE_SRC = {
+Funny:[
+"Do your best impression of a celebrity until your partner guesses who it is.",
+"Speak in an accent for the next three minutes.",
+"Dance without music for 30 seconds.",
+"Make up a short song about your partner, right now.",
+"Try to lick your elbow.",
+"Talk like a news anchor and report on your day.",
+"Balance something on your head for 20 seconds.",
+"Act out an animal until your partner guesses it.",
+"Say the alphabet backwards as fast as you can.",
+"Act out your last dream in mime.",
+"Let your partner draw a tiny doodle on your hand.",
+"Sing your favorite song using only the word “meow”.",
+"Make the funniest face you can and hold it for 10 seconds.",
+"Narrate the next thing you do like a nature documentary.",
+"Make your partner laugh within 30 seconds, without touching them."],
+Romantic:[
+"Write a two-line love note and read it aloud.",
+"Hold hands and look into each other's eyes for one minute.",
+"Tell your partner three things you love about them.",
+"Slow dance together for one song.",
+"Recreate the moment you first met.",
+"Give your partner a sincere compliment they rarely hear.",
+"Say thank you for three specific things your partner did this week.",
+"Plan a surprise date out loud, with all the details.",
+"Whisper something you're grateful for into your partner's ear.",
+"Share a favorite memory of you two and describe how it felt.",
+"Make a small promise to your partner, and mean it.",
+"Give your partner a long, warm hug without saying anything.",
+"Tell your partner what you were thinking the first time you held hands.",
+"Describe your partner using only three words, then explain each one.",
+"Send your partner a sweet message right now, even though they're beside you."],
+Cute:[
+"Give your partner a forehead kiss.",
+"Let your partner choose your next profile picture.",
+"Do a little happy dance and finish with a high five.",
+"Give your partner a new cute nickname.",
+"Take a silly selfie together.",
+"Hug your partner from behind for 20 seconds.",
+"Talk in a baby voice for the rest of your turn.",
+"Draw a small heart on your partner's hand.",
+"Build a tiny gift out of anything nearby and give it to them.",
+"Say “I'm so lucky” and explain why.",
+"Give your partner a gentle shoulder squeeze.",
+"Let your partner pick an emoji that describes you.",
+"Make a pinky promise about something small.",
+"Trade a small accessory with your partner for the rest of the game.",
+"Give your partner your best puppy-eyes look and hold it."],
+Flirty:[
+"Give your partner a compliment with a wink.",
+"Whisper your favorite thing about your partner's smile.",
+"Trace a slow heart on your partner's palm.",
+"Say something charming in your smoothest voice.",
+"Give your partner a kiss on the cheek.",
+"Look into their eyes without blinking or looking away for 20 seconds.",
+"Tell your partner what you noticed about them the first time you met.",
+"Deliver your best pickup line, fully committed.",
+"Give a slow hand massage for one minute.",
+"Send your partner a flirty text right now.",
+"Lean in close and whisper something sweet.",
+"Tell your partner which outfit of theirs you like most, and why.",
+"Give your partner a playful smirk and hold it.",
+"Say “come here” in the smoothest voice you can manage.",
+"Compliment your partner three times in a row without repeating yourself."],
+Wild:[
+"Do ten jumping jacks while your partner counts.",
+"Let your partner feed you a snack while your eyes are closed.",
+"Let your partner style your hair however they like.",
+"Take a photo in the funniest pose your partner picks.",
+"Speak only in questions for the next two minutes.",
+"Try to do a cartwheel, or the closest thing you can manage.",
+"Shout something silly out of the nearest window.",
+"Let your partner choose a song, then dance to it.",
+"Do your best runway walk across the room.",
+"Swap a piece of clothing with your partner for the rest of the game.",
+"Say a tongue twister three times fast.",
+"Close your eyes and guess an object your partner places in your hand.",
+"Let your partner give you a silly makeover with whatever's nearby.",
+"Hold a plank for as long as you can while your partner tells a story.",
+"Text one harmless emoji to a random contact, and show your partner the reply."],
+Couple:[
+"Tell your partner one thing you'd like to do together this month.",
+"Name five things you two have in common in 20 seconds.",
+"Give your partner a shoulder rub for one minute.",
+"Plan a snack you could make together in ten minutes.",
+"Take a photo together that you'll keep as a memory.",
+"Recreate a couple's pose from your favorite movie.",
+"Describe your perfect lazy Sunday together.",
+"Write a short bucket list of three trips you'd take together.",
+"Tell your partner something you learned from them.",
+"Plan your next date together in one minute.",
+"Share a quiet hope you have for your relationship.",
+"Play three quick rounds of “would you rather”.",
+"Finish each other's sentences for the next minute.",
+"Take ten slow, deep breaths together.",
+"Pick a song that belongs to the two of you and hum it together."],
+Random:[
+"Text a friend “I'm thinking of you” right now.",
+"Do your best impression of your partner.",
+"Name as many countries as you can in 30 seconds.",
+"Hum a song and let your partner guess it.",
+"Tell a joke, and make it a good one.",
+"Stand on one leg for 30 seconds.",
+"Describe your day in exactly five words.",
+"Show your partner the last photo you took and explain it.",
+"Say the word “banana” in as many voices as you can.",
+"Do a slow-motion replay of something you did earlier today.",
+"Do a ten-second impersonation of a robot.",
+"Give a one-minute motivational speech about anything.",
+"Tell your partner three things you're looking forward to.",
+"Pick a random object and sell it to your partner like an ad.",
+"Ask your partner any question, then answer it yourself, honestly."]
+};
+const truths = []; for (const c in TRUTH_SRC) TRUTH_SRC[c].forEach(t => truths.push({cat:c, text:t}));
+const dares  = []; for (const c in DARE_SRC)  DARE_SRC[c].forEach(t => dares.push({cat:c, text:t}));
+
+/* ================= STATE ================= */
+const KEY = 'truth-dare-v1';
+const DEF = {names:['',''], settings:{sound:true, bg:'ocean', turns:10}, game:null, history:[], used:{truths:[], dares:[]}};
+const BGS = [['ocean','Obsidian Shore'],['rain','Rainy Window'],['night','Night Sky'],['forest','Smoke'],['sunset','Moonlight'],['black','Minimal Black']];
+let S = load();
+if (!S.used || !Array.isArray(S.used.truths) || !Array.isArray(S.used.dares)) S.used = {truths:[], dares:[]};
+function load(){
+  try{
+    const r = JSON.parse(localStorage.getItem(KEY));
+    if (r) return {...JSON.parse(JSON.stringify(DEF)), ...r, settings:{...DEF.settings, ...(r.settings||{})}};
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEF));
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const ui = {screen:'splash', sel:String(S.settings.turns), custom:'', detail:null, from:null, choosing:false};
+if (![5,10,20].includes(S.settings.turns)) { ui.sel='custom'; ui.custom=String(S.settings.turns); }
+if (S.game && S.names[0] && S.names[1]) ui.screen = 'turn';
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const N = i => esc(S.names[i] || 'Player ' + (i+1));
+let ac;
+function beep(f=520, d=.14, v=.035){
+  if (!S.settings.sound) return;
+  try{
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type='sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(v, ac.currentTime); g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime+d);
+    o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+d);
+  }catch(e){}
+}
+function buzz(ms=14){ if (S.settings.sound && navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
+let toastT;
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1900); }
+function confirmBox(title, msg, ok, cb){
+  const m = $('#modal');
+  m.innerHTML = `<div class="box glass"><h3>${title}</h3><p>${msg}</p><div class="acts"><button class="btn ghost" data-m="no">Cancel</button><button class="btn" data-m="yes">${ok}</button></div></div>`;
+  m.style.display='flex';
+  m.onclick = e => { const b = e.target.closest('[data-m]'); if (!b && e.target!==m) return; m.style.display='none'; if (b && b.dataset.m==='yes') cb(); };
+}
+function pick(list, used){
+  let avail = list.map((_,i)=>i).filter(i=>!used.includes(i));
+  if (!avail.length){ used.length = 0; avail = list.map((_,i)=>i); }
+  const i = avail[Math.floor(Math.random()*avail.length)];
+  used.push(i);
+  return list[i];
+}
+const fmtDate = ts => new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+
+/* ================= ICONS ================= */
+const sv = (p, s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ic = {
+  back: sv('<path d="M15 5l-7 7 7 7"/>'),
+  gear: sv('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',20),
+  heart: sv('<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',44),
+  user: sv('<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.8-5.4 7-5.4s6.2 1.8 7 5.4"/>'),
+  star: sv('<path d="M12 3l1.9 5.6L19.5 10l-4.6 3.4 1.7 5.6L12 15.6 7.4 19l1.7-5.6L4.5 10l5.6-1.4z"/>'),
+  spark: sv('<path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18" opacity=".35"/><path d="M12 5c.6 4.4 2.6 6.4 7 7-4.4.6-6.4 2.6-7 7-.6-4.4-2.6-6.4-7-7 4.4-.6 6.4-2.6 7-7z"/>',30),
+  game: sv('<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r=".8"/><circle cx="15" cy="15" r=".8"/><circle cx="12" cy="12" r=".8"/>'),
+  clock: sv('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+  bars: sv('<path d="M6 20V11M12 20V5M18 20v-6"/>'),
+  chev: sv('<path d="M9 5l7 7-7 7"/>',18),
+  arrow: sv('<path d="M5 12h14M13 6l6 6-6 6"/>',18),
+  sound: sv('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7"/>'),
+  palette: sv('<path d="M12 3a9 9 0 100 18c1.2 0 1.8-.9 1.4-1.9-.4-1 .2-2.1 1.3-2.1H17a4 4 0 004-4c0-5-4-10-9-10z"/><circle cx="8" cy="11" r=".8"/><circle cx="12" cy="7.5" r=".8"/><circle cx="16" cy="11" r=".8"/>'),
+  reset: sv('<path d="M4 12a8 8 0 108-8 8 8 0 00-6 2.7L4 9"/><path d="M4 4v5h5"/>'),
+  book: sv('<path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M5 17a3 3 0 013-3h11"/>'),
+  info: sv('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.01"/>'),
+  edit: sv('<path d="M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z"/>'),
+  hash: sv('<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>'),
+  lock: sv('<rect x="5" y="11" width="14" height="9" rx="3"/><path d="M8 11V8a4 4 0 018 0v3"/>'),
+  offline: sv('<path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 017 0M5 12.6a10 10 0 013-2M12 20v.01M19 12.6a10 10 0 00-6.5-3.5"/>'),
+};
+
+ic.heartS = ic.heart.replace('width="44" height="44"','width="26" height="26"');
+const strip = p => `<div class="strip">${[0,1].map(i=>`<span class="pl ${i===p?'on':''}"><i></i>${N(i)}</span>`).join('')}</div>`;
+
+/* ================= LAYOUT PIECES ================= */
+function bar({back, title, serif, gear, act}){
+  const l = back ? `<button class="ib" data-act="${act||'go'}" data-v="${back}" aria-label="Back">${ic.back}</button>` : '';
+  const r = gear ? `<button class="ib" data-act="go" data-v="settings" aria-label="Settings">${ic.gear}</button>` : '';
+  return `<div class="bar"><div>${l}</div><div class="bt ${serif?'s':''}">${title||''}</div><div>${r}</div></div>`;
+}
+function navHTML(sc){
+  const on = {home:'home',gsetup:'home',history:'history',detail:'history',stats:'stats'}[sc];
+  return [['home','Game',ic.game],['history','History',ic.clock],['stats','Stats',ic.bars]]
+    .map(([v,l,i]) => `<button data-act="go" data-v="${v}" class="${on===v?'on':''}">${i}<span>${l}</span></button>`).join('');
+}
+function chipsHTML(){
+  const c = v => `<button class="chip glass ${ui.sel===v?'on':''}" data-act="chip" data-v="${v}"><b>${v==='custom'?'Custom':v}</b><small>${v==='custom'?'your number':'turns'}</small></button>`;
+  return `<div class="chips">${c('5')}${c('10')}${c('20')}${c('custom')}</div>` +
+    (ui.sel==='custom' ? `<div class="custom glass"><input id="customN" type="number" inputmode="numeric" min="1" max="100" placeholder="1 – 100" value="${esc(ui.custom)}" aria-label="Custom number of turns"><span>turns</span></div>` : '');
+}
+function chosenTurns(){
+  const n = ui.sel==='custom' ? parseInt(ui.custom,10) : parseInt(ui.sel,10);
+  return (n>=1 && n<=100) ? n : null;
+}
+const curPlayer = g => (g.turn-1) % 2;
+
+/* ================= SCREENS ================= */
+const screens = {
+splash(){
+  return {top:'', nav:false, body:`
+  <div class="splash" data-act="start">
+    <div class="spacer"></div>
+    <h1 class="metal mini">TRUTH<span>×</span>DARE</h1>
+    <div class="spacer"></div>
+    <button class="btn" data-act="start">Tap to start ${ic.arrow}</button>
+  </div>`};
+},
+names(){
+  return {top: bar({back: ui.from==='settings' ? 'settings' : null}), nav:false, body:`
+  <div class="center" style="margin-top:10px"><h1 class="serif ttl">Enter Player Names</h1><p class="sub">Two people. One game.</p></div>
+  <div class="field glass" style="margin-top:34px"><span class="av">${ic.user}</span><div style="flex:1"><label for="n1">Player 1</label><input id="n1" maxlength="14" placeholder="Name" value="${esc(S.names[0])}" autocomplete="off"></div></div>
+  <div class="field glass"><span class="av">${ic.user}</span><div style="flex:1"><label for="n2">Player 2</label><input id="n2" maxlength="14" placeholder="Name" value="${esc(S.names[1])}" autocomplete="off"></div></div>
+  <div class="spacer"></div>
+  <button class="btn" data-act="saveNames">Continue ${ic.arrow}</button>`};
+},
+home(){
+  const g = S.game, resume = g && g.phase !== 'complete';
+  return {top: bar({gear:true}), nav:true, body:`
+  <div class="hero" style="margin-top:18px"><div class="mk">${ic.heartS}</div><h1 class="serif hello">Hey,<br>${N(0)} &amp; ${N(1)}</h1><p class="sub" style="font-size:16px;margin-top:14px">Ready for some fun?</p></div>
+  <div class="spacer"></div>
+  ${resume?`<div class="resume glass"><i></i><span>Game in progress · <b>Turn ${g.turn} of ${g.total}</b></span></div>`:''}
+  <button class="btn" data-act="${resume?'resume':'go'}" data-v="gsetup">${resume?'Resume Game':'Start Game'} ${ic.arrow}</button>
+  ${resume?`<button class="link" data-act="go" data-v="gsetup">Start a new game</button>`:''}
+  <div class="pills">
+    <button class="pill glass" data-act="go" data-v="history">History</button>
+    <button class="pill glass" data-act="go" data-v="stats">Stats</button>
+    <button class="pill glass" data-act="go" data-v="settings">Settings</button>
+  </div>`};
+},
+gsetup(){
+  return {top: bar({back:'home', title:'New game'}), nav:true, body:`
+  <div class="center" style="margin-top:8px"><h1 class="serif ttl">Number of Turns</h1><p class="sub">One turn is one player, one prompt.</p></div>
+  ${chipsHTML()}
+  <p class="note">${N(0)} goes first, then you take turns.</p>
+  <div class="spacer"></div>
+  <button class="btn" data-act="startGame">Start Game ${ic.arrow}</button>`};
+},
+turnsset(){
+  return {top: bar({back:'settings', title:'Turns'}), nav:false, body:`
+  <div class="center" style="margin-top:8px"><h1 class="serif ttl">Number of Turns</h1><p class="sub">Used for your next game.</p></div>
+  ${chipsHTML()}
+  <div class="spacer"></div>
+  <button class="btn" data-act="saveTurns">Save</button>`};
+},
+turn(){
+  const g = S.game;
+  if (!g) { ui.screen='home'; return screens.home(); }
+  if (g.phase === 'complete') return screens.complete();
+  const p = curPlayer(g), name = N(p);
+  const top = bar({back:'leave', act:'leave', title:`Turn ${g.turn} / ${g.total}`}) + `<div class="prog"><i style="transform:scaleX(${(g.turn-1)/g.total})"></i></div>`;
+
+  if (ui.choosing) return {top, nav:false, body:`
+    <div class="spacer"></div>
+    <div class="center">
+      <div class="shuf"><div class="ring"></div><div class="c c1 glass">${ic.user}</div><div class="c c2 glass">${ic.star}</div></div>
+      <div class="word" id="shufWord">·</div>
+      <p class="muted" style="margin-top:6px;font-size:14px">Choosing...</p>
+    </div>
+    <div class="spacer"></div>`};
+
+  if (g.phase === 'ready') return {top, nav:false, body:`
+    <div class="spacer"></div>
+    <div class="center">
+      ${strip(p)}
+      <div style="height:30px"></div>
+      <div class="avatar">${esc((S.names[p]||'?').trim().charAt(0).toUpperCase())}</div>
+      <h2 class="serif big">${name}'s turn</h2>
+      <p class="sub" style="margin-top:12px">Pass the phone to ${name}</p>
+    </div>
+    <div class="spacer"></div>
+    <button class="reveal" data-act="reveal">REVEAL</button>
+    <div style="height:8px"></div>`};
+
+  if (g.phase === 'typed') {
+    const t = g.type === 'truth';
+    return {top, nav:false, body:`
+    <div class="spacer"></div>
+    <div class="pcard ${g.type} tap" data-act="showPrompt" role="button" tabindex="0">
+      <div class="spark">${ic.spark}</div>
+      <div class="who">${name}</div>
+      <h2 class="serif">${t?'Truth':'Dare'}</h2>
+      <hr>
+      <p class="hint">Tap to reveal your ${t?'question':'challenge'}</p>
+    </div>
+    <div class="spacer"></div>`};
+  }
+
+  if (g.phase === 'prompt') {
+    const t = g.type === 'truth';
+    return {top, nav:false, body:`
+    <div class="spacer"></div>
+    <div class="pcard ${g.type}">
+      <div class="who">${name}</div>
+      <h2 class="serif" style="font-size:28px">${t?'Truth':'Dare'}</h2>
+      <hr>
+      <p class="ptext">${esc(g.prompt.text)}</p>
+      <div class="cat">${esc(g.prompt.cat)}</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" data-act="done">Done ${ic.arrow}</button>`};
+  }
+
+  if (g.phase === 'pass') {
+    const nx = N(curPlayer(g));
+    return {top, nav:false, body:`
+    <div class="spacer"></div>
+    <div class="center">
+      <p class="muted" style="font-size:13px;letter-spacing:.2em;margin:0 0 18px">TURN COMPLETE</p>
+      <h2 class="serif big" style="font-size:34px">Your turn is over.</h2>
+      <p class="sub" style="margin-top:16px;font-size:16px">Pass the phone to ${nx}.</p>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" data-act="ready">I'm ready ${ic.arrow}</button>`};
+  }
+  return {top, nav:false, body:''};
+},
+complete(){
+  const g = S.game, mine = S.history.filter(h => h.gid === g.id);
+  const t = mine.filter(h => h.type==='truth').length, d = mine.length - t;
+  return {top:'', nav:false, body:`
+  <div class="spacer"></div>
+  <div class="center">
+    <div style="color:var(--ink2);margin-bottom:22px">${ic.heart}</div>
+    <p class="muted" style="font-size:13px;letter-spacing:.3em;margin:0 0 14px">GAME COMPLETE</p>
+    <h1 class="serif big" style="font-size:34px">${mine.length} turns together.</h1>
+  </div>
+  <div class="grid2" style="margin-top:34px">
+    <div class="stat glass"><b>${t}</b><small>Truths</small></div>
+    <div class="stat glass"><b>${d}</b><small>Dares</small></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" data-act="again">Play Again</button>
+  <div style="height:10px"></div>
+  <button class="btn ghost" data-act="homeAfter">Back Home</button>`};
+},
+history(){
+  const list = [...S.history].reverse();
+  let body = `<div class="center" style="margin-top:2px"><h1 class="serif ttl" style="font-size:26px">Game History</h1></div>`;
+  if (!list.length) body += `<div class="empty">No turns yet.<br>Every truth and dare you complete will be kept here.</div>`;
+  else {
+    let lastG = null, html = '';
+    list.forEach(h => {
+      if (h.gid !== lastG){ html += `<div class="divl">${fmtDate(h.gid)}</div>`; lastG = h.gid; }
+      const i = S.history.indexOf(h);
+      html += `<button class="row glass hrow" data-act="detail" data-v="${i}"><div class="rt"><b>Turn ${h.turn}</b><small class="${h.type==='truth'?'t':'d'}">${esc(h.name)} · ${h.type==='truth'?'Truth':'Dare'}</small></div><span class="ch">${ic.chev}</span></button>`;
+    });
+    body += `<div class="list" style="margin-top:6px">${html}</div>`;
+  }
+  return {top: bar({back:'home'}), nav:true, body};
+},
+detail(){
+  const h = S.history[ui.detail];
+  if (!h){ ui.screen='history'; return screens.history(); }
+  return {top: bar({back:'history', title:`Turn ${h.turn}`}), nav:true, body:`
+  <div class="spacer"></div>
+  <div class="pcard ${h.type}">
+    <div class="who">${esc(h.name)}</div>
+    <h2 class="serif" style="font-size:28px">${h.type==='truth'?'Truth':'Dare'}</h2>
+    <hr>
+    <p class="ptext" style="animation:none">${esc(h.text)}</p>
+    <div class="cat">${esc(h.cat)} · ${fmtDate(h.ts)}</div>
+  </div>
+  <div class="spacer"></div>`};
+},
+stats(){
+  const H = S.history, t = H.filter(h=>h.type==='truth').length, d = H.length - t;
+  const p1 = H.filter(h=>h.player===0).length, p2 = H.filter(h=>h.player===1).length;
+  return {top: bar({back:'home', title:'Your Stats', serif:true}), nav:true, body:`
+  <div class="grid2" style="margin-top:14px">
+    <div class="stat wide glass"><b>${H.length}</b><small>Total Turns</small></div>
+    <div class="stat glass"><b>${t}</b><small>Truths</small></div>
+    <div class="stat glass"><b>${d}</b><small>Dares</small></div>
+    <div class="stat glass"><b>${p1}</b><small>${N(0)}</small></div>
+    <div class="stat glass"><b>${p2}</b><small>${N(1)}</small></div>
+  </div>
+  <p class="note" style="margin-top:26px">Good things happen when two people play together.</p>`};
+},
+settings(){
+  const row = (ic_, t, s, act, v, right) => `<button class="row glass" data-act="${act}" ${v!==undefined?`data-v="${v}"`:''}><span class="ri">${ic_}</span><span class="rt"><b>${t}</b>${s?`<small>${s}</small>`:''}</span>${right===undefined?`<span class="ch">${ic.chev}</span>`:right}</button>`;
+  return {top: bar({back:'home', title:'Settings', serif:true}), nav:false, body:`
+  <div class="sec">GAME</div>
+  <div class="list" style="margin-top:8px">
+    ${row(ic.edit,'Change Player Names',`${N(0)} &amp; ${N(1)}`,'editNames')}
+    ${row(ic.hash,'Number of Turns',`${S.settings.turns} turns`,'turnsSet')}
+    ${row(ic.sound,'Sound &amp; Vibration',S.settings.sound?'On':'Off','sound','',`<span class="sw ${S.settings.sound?'on':''}"></span>`)}
+    ${row(ic.palette,'Background',BGS.find(b=>b[0]===S.settings.bg)[1],'go','bgs')}
+    ${row(ic.reset,'Reset Game',`${truths.length-S.used.truths.length} truths and ${dares.length-S.used.dares.length} dares still unseen`,'reset')}
+  </div>
+  <div class="sec">ABOUT</div>
+  <div class="list" style="margin-top:8px">
+    ${row(ic.book,'How to Play','','go','howto')}
+    ${row(ic.info,'About','Version 1.0.0','go','about')}
+  </div>`};
+},
+howto(){
+  const st = [['Enter your names','Add both players.'],['Choose the turns','5, 10, 20, or your own number.'],['Pass the phone','Only the player whose turn it is looks.'],['Tap Reveal','Truth or Dare is picked at random, every turn.'],['Read, do, tap Done','Then pass the phone to the other player.']];
+  return {top: bar({back:'settings', title:'How to Play', serif:true}), nav:false, body:`
+  <div style="margin-top:14px">${st.map((s,i)=>`<div class="step"><i>${i+1}</i><div><b>${s[0]}</b><small>${s[1]}</small></div></div>`).join('')}</div>
+  <div class="spacer"></div>
+  <button class="btn" data-act="go" data-v="settings">Got it ${ic.arrow}</button>`};
+},
+about(){
+  const it = (i,t)=>`<div class="step" style="align-items:center"><span class="muted" style="width:32px;display:grid;place-items:center">${i}</span><small style="font-size:14px;color:var(--ink2)">${t}</small></div>`;
+  return {top: bar({back:'settings'}), nav:false, body:`
+  <div class="center" style="margin-top:20px;color:var(--ink2)">${ic.heart}<h1 class="serif ttl" style="color:var(--ink);margin-top:16px">Truth × Dare</h1><p class="sub" style="font-size:12px">Version 1.0.0</p><p class="sub" style="margin-top:20px">Two hearts. One game.</p></div>
+  <div style="margin-top:34px">
+    ${it(ic.offline,'No internet needed to play')}
+    ${it(ic.lock,'Your data stays on your device')}
+    ${it(ic.heart.replace('width="44" height="44"','width="20" height="20"'),'No winner. No loser. Just a shared game.')}
+  </div>
+  <div class="spacer"></div>
+  <p class="center muted serif" style="font-style:italic;font-size:17px;margin:0 0 14px">Play. Laugh. Repeat.</p>`};
+},
+bgs(){
+  return {top: bar({back:'settings', title:'Background', serif:true}), nav:false, body:`
+  <p class="sub" style="margin-top:10px">Choose your vibe.</p>
+  <div class="bgs">${BGS.map(([k,n])=>`<button class="tile ${S.settings.bg===k?'on':''}" data-act="bg" data-v="${k}" aria-label="${n}"><div class="scene s-${k}"></div><span>${n}</span></button>`).join('')}</div>`};
+}
+};
+
+/* ================= RENDER ================= */
+function render(anim=true){
+  const r = screens[ui.screen]();
+  $('#top').innerHTML = r.top || '';
+  const sc = $('#screen'); sc.innerHTML = r.body;
+  const nv = $('#nav'); nv.style.display = r.nav ? 'flex' : 'none'; nv.innerHTML = r.nav ? navHTML(ui.screen) : '';
+  if (anim){ sc.classList.remove('enter'); void sc.offsetWidth; sc.classList.add('enter'); sc.scrollTop = 0; }
+  $('#scene').className = 'scene s-' + S.settings.bg;
+  document.body.classList.toggle('plain', ui.screen==='splash');
+}
+function go(s){ ui.screen = s; if (s==='gsetup'){ const n=S.settings.turns; ui.sel=[5,10,20].includes(n)?String(n):'custom'; ui.custom=String(n); } render(); }
+
+/* ================= GAME LOGIC ================= */
+function startGame(total){
+  S.settings.turns = total;
+  S.game = {id:Date.now(), total, turn:1, phase:'ready', type:null, prompt:null};
+  save(); ui.screen='turn'; render();
+}
+function reveal(){
+  const g = S.game;
+  if (!g || g.phase!=='ready' || ui.choosing) return;
+  /* random type, decided independently for this turn only */
+  const type = Math.random() < 0.5 ? 'truth' : 'dare';
+  ui.choosing = true; buzz(); beep(420); render(false);
+  const seq = []; const n = 10;
+  for (let i=0;i<n;i++) seq.unshift(i%2===0 ? type : (type==='truth'?'dare':'truth'));
+  let i = 0; const w = $('#shufWord');
+  const tick = () => {
+    if (i < seq.length){ w.textContent = seq[i].toUpperCase(); i++; beep(300+i*22,.05,.012); setTimeout(tick, 80); }
+    else setTimeout(() => {
+      ui.choosing = false; g.type = type; g.phase = 'typed'; save(); buzz(20); beep(640,.2,.04); render();
+    }, 180);
+  };
+  tick();
+}
+function showPrompt(){
+  const g = S.game;
+  if (!g || g.phase!=='typed') return;
+  g.prompt = g.type==='truth' ? pick(truths, S.used.truths) : pick(dares, S.used.dares);
+  g.phase = 'prompt'; save(); buzz(); beep(560,.16); render();
+}
+function done(){
+  const g = S.game;
+  if (!g || g.phase!=='prompt') return;
+  const p = curPlayer(g);
+  S.history.push({gid:g.id, turn:g.turn, player:p, name:S.names[p], type:g.type, cat:g.prompt.cat, text:g.prompt.text, ts:Date.now()});
+  g.type = null; g.prompt = null;
+  if (g.turn >= g.total) g.phase = 'complete';
+  else { g.turn++; g.phase = 'pass'; }   /* next player's type is NOT chosen yet */
+  save(); buzz(); beep(480,.18); render();
+}
+
+/* ================= EVENTS ================= */
+const act = {
+  start(){ go(S.names[0] && S.names[1] ? 'home' : 'names'); },
+  go(t){ go(t.dataset.v); },
+  saveNames(){
+    const a = $('#n1').value.trim(), b = $('#n2').value.trim();
+    if (!a || !b){ toast('Add both names to continue'); const f=$('.field'); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); return; }
+    S.names = [a,b]; save(); const back = ui.from; ui.from = null; go(back || 'home');
+  },
+  editNames(){ ui.from='settings'; go('names'); },
+  turnsSet(){ go('turnsset'); },
+  chip(t){ ui.sel = t.dataset.v; render(false); const c=$('#customN'); if (c) c.focus(); },
+  startGame(){ const n = chosenTurns(); if (!n) return toast('Choose 1 to 100 turns'); startGame(n); },
+  saveTurns(){ const n = chosenTurns(); if (!n) return toast('Choose 1 to 100 turns'); S.settings.turns = n; save(); toast('Saved'); go('settings'); },
+  resume(){ ui.screen='turn'; render(); },
+  reveal, showPrompt, done,
+  ready(){ const g=S.game; if (g && g.phase==='pass'){ g.phase='ready'; save(); render(); } },
+  leave(){ if (ui.choosing) return; confirmBox('Leave game?','Your progress is saved. You can resume from Home.','Leave',()=>{ go('home'); }); },
+  again(){ startGame(S.game ? S.game.total : S.settings.turns); },
+  homeAfter(){ S.game = null; save(); go('home'); },
+  detail(t){ ui.detail = parseInt(t.dataset.v,10); go('detail'); },
+  sound(){ S.settings.sound = !S.settings.sound; save(); render(false); if (S.settings.sound){ buzz(); beep(); } },
+  bg(t){ S.settings.bg = t.dataset.v; save(); render(false); },
+  reset(){ confirmBox('Reset everything?','This clears the current game, history and stats. Prompts you have already seen will not come back.','Reset',()=>{ S.game=null; S.history=[]; save(); toast('Game reset'); render(false); }); }
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if (t && act[t.dataset.act]) act[t.dataset.act](t);
+});
+document.addEventListener('keydown', e => {
+  if ((e.key==='Enter'||e.key===' ') && e.target.matches('.pcard.tap')){ e.preventDefault(); showPrompt(); }
+  if (e.key==='Enter' && e.target.matches('#n1')) $('#n2').focus();
+  if (e.key==='Enter' && e.target.matches('#n2')) act.saveNames();
+});
+document.addEventListener('input', e => { if (e.target.id==='customN') ui.custom = e.target.value; });
+
+render();
+</script>
+</body>
+</html>
